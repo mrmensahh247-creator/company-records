@@ -1899,6 +1899,86 @@ def change_password():
 # COMPANY SETTINGS
 # =========================================================
 
+# =========================================================
+# USER PROFILE AND PROFILE PICTURE
+# =========================================================
+
+@app.route("/profile", methods=["GET", "POST"])
+def profile():
+
+    if not login_required():
+        return redirect(url_for("login"))
+
+    conn = get_db()
+
+    user = conn.execute("""
+        SELECT id, username, role, profile_picture
+        FROM users
+        WHERE id = ?
+    """, (session["user_id"],)).fetchone()
+
+    if not user:
+        conn.close()
+        session.clear()
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+
+        uploaded_file = request.files.get("profile_picture")
+
+        if not uploaded_file or not uploaded_file.filename:
+            conn.close()
+            flash("Please choose a picture first.", "error")
+            return redirect(url_for("profile"))
+
+        original_name = secure_filename(uploaded_file.filename)
+        extension = os.path.splitext(original_name)[1].lower().lstrip(".")
+
+        if extension not in ALLOWED_PROFILE_EXTENSIONS:
+            conn.close()
+            flash("Use a PNG, JPG, JPEG, or WEBP image.", "error")
+            return redirect(url_for("profile"))
+
+        try:
+            os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+            filename = (
+                f"user_{session['user_id']}_"
+                f"{int(datetime.now().timestamp())}.{extension}"
+            )
+
+            uploaded_file.save(
+                os.path.join(UPLOAD_FOLDER, filename)
+            )
+
+            conn.execute("""
+                UPDATE users
+                SET profile_picture = ?
+                WHERE id = ?
+            """, (filename, session["user_id"]))
+
+            conn.commit()
+
+            session["profile_picture"] = filename
+
+            flash("Profile picture updated successfully.", "success")
+
+        except Exception:
+            flash("The picture could not be saved. Please try again.", "error")
+
+        finally:
+            conn.close()
+
+        return redirect(url_for("profile"))
+
+    conn.close()
+
+    return render_template(
+        "profile.html",
+        user=user,
+        company_settings=get_company_settings()
+    )
+
 @app.route(
     "/settings",
     methods=["GET", "POST"]
