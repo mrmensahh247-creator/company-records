@@ -128,12 +128,23 @@ id INTEGER PRIMARY KEY AUTOINCREMENT,
 username TEXT UNIQUE NOT NULL,
 password TEXT NOT NULL,
 role TEXT NOT NULL DEFAULT 'staff',
-profile_picture TEXT
+conn.execute("""     CREATE TABLE IF NOT EXISTS users (
     conn.execute("""
         CREATE TABLE IF NOT EXISTS users (
            
         )
     """)
+        user_columns = [
+        row["name"]
+        for row in conn.execute(
+            "PRAGMA table_info(users)"
+        ).fetchall()
+    ]
+
+    if "profile_picture" not in user_columns:
+        conn.execute(
+            "ALTER TABLE users ADD COLUMN profile_picture TEXT"
+        )
 
     # -----------------------------------------------------
     # COMPANY SETTINGS
