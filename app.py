@@ -124,13 +124,14 @@ def init_db():
     # -----------------------------------------------------
     # USERS
     # -----------------------------------------------------
-
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+username TEXT UNIQUE NOT NULL,
+password TEXT NOT NULL,
+role TEXT NOT NULL DEFAULT 'staff',
+profile_picture TEXT
     conn.execute("""
         CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL,
-            role TEXT NOT NULL DEFAULT 'staff'
+           
         )
     """)
 
