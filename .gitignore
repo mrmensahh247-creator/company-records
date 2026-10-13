@@ -1,0 +1,8 @@
+﻿.venv/
+venv/
+__pycache__/
+*.py[cod]
+.env
+company_records.db
+company_records_before_restore_*.db
+backups/

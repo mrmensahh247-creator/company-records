@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Backup Database | Company Records</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 250px;
+            background: #111827;
+            border-right: 1px solid #334155;
+            padding: 20px 14px;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .logo {
+            padding: 10px 12px 25px;
+            border-bottom: 1px solid #334155;
+            margin-bottom: 20px;
+        }
+
+        .logo h2 {
+            margin: 0;
+            font-size: 22px;
+            color: #ffffff;
+        }
+
+        .logo p {
+            margin: 6px 0 0;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .menu-title {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            padding: 0 12px;
+            margin: 18px 0 8px;
+            letter-spacing: 1px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #cbd5e1;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .nav-link:hover {
+            background: #1e293b;
+            color: white;
+        }
+
+        .nav-link.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .icon {
+            width: 22px;
+            text-align: center;
+        }
+
+        /* MAIN */
+        .main {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            min-height: 100vh;
+        }
+
+        /* TOPBAR */
+        .topbar {
+            height: 72px;
+            background: #111827;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+        }
+
+        .topbar-left h1 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .topbar-left p {
+            margin: 5px 0 0;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .user-text {
+            text-align: right;
+        }
+
+        .user-text strong {
+            display: block;
+            font-size: 14px;
+        }
+
+        .user-text span {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        /* CONTENT */
+        .content {
+            padding: 30px;
+        }
+
+        .flash {
+            padding: 14px 18px;
+            border-radius: 8px;
+            background: #064e3b;
+            border: 1px solid #10b981;
+            color: #d1fae5;
+            margin-bottom: 20px;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header h2 {
+            margin: 0 0 8px;
+            font-size: 28px;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: #94a3b8;
+        }
+
+        /* CARDS */
+        .card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 22px;
+        }
+
+        .backup-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 14px;
+            background: rgba(37, 99, 235, 0.15);
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            margin: 0 0 10px;
+            font-size: 21px;
+        }
+
+        .card p {
+            color: #94a3b8;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        .info-box {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 18px;
+        }
+
+        .info-box span {
+            display: block;
+            color: #94a3b8;
+            font-size: 12px;
+            margin-bottom: 7px;
+        }
+
+        .info-box strong {
+            font-size: 16px;
+        }
+
+        /* BUTTON */
+        .backup-btn {
+            border: none;
+            background: #2563eb;
+            color: white;
+            padding: 13px 22px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .backup-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        .warning {
+            background: rgba(245, 158, 11, 0.08);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #fcd34d;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 20px;
+            line-height: 1.6;
+            font-size: 13px;
+        }
+
+        /* MOBILE */
+        .mobile-menu {
+            display: none;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            padding: 9px 12px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 900;
+        }
+
+        @media (max-width: 900px) {
+
+            .sidebar {
+                transform: translateX(-100%);
+                transition: 0.25s;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .topbar {
+                padding: 0 18px;
+            }
+
+            .topbar-left {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .user-text {
+                display: none;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .overlay.show {
+                display: block;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .topbar-left h1 {
+                font-size: 18px;
+            }
+
+            .page-header h2 {
+                font-size: 23px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+
+        <div class="logo">
+            <h2>CR SYSTEM</h2>
+            <p>Company Records Management</p>
+        </div>
+
+        <div class="menu-title">Main</div>
+
+        <a href="{{ url_for('dashboard') }}" class="nav-link">
+            <span class="icon">🏠</span>
+            Dashboard
+        </a>
+
+        <a href="{{ url_for('reports') }}" class="nav-link">
+            <span class="icon">📊</span>
+            Reports
+        </a>
+
+        <a href="{{ url_for('attendance') }}" class="nav-link">
+            <span class="icon">🕒</span>
+            Attendance
+        </a>
+
+        <a href="{{ url_for('attendance_reports') }}" class="nav-link">
+            <span class="icon">📋</span>
+            Attendance Reports
+        </a>
+
+        {% if session.get('role') == 'admin' %}
+
+        <div class="menu-title">Administration</div>
+
+        <a href="{{ url_for('employees') }}" class="nav-link">
+            <span class="icon">👥</span>
+            Employees
+        </a>
+
+        <a href="{{ url_for('users') }}" class="nav-link">
+            <span class="icon">👤</span>
+            Users
+        </a>
+
+        <a href="{{ url_for('settings') }}" class="nav-link">
+            <span class="icon">⚙️</span>
+            Company Settings
+        </a>
+
+        <a href="{{ url_for('backup') }}" class="nav-link active">
+            <span class="icon">💾</span>
+            Backup Database
+        </a>
+
+        <a href="{{ url_for('restore') }}" class="nav-link">
+            <span class="icon">♻️</span>
+            Restore Database
+        </a>
+
+        {% endif %}
+
+        <div class="menu-title">Account</div>
+
+        <a href="{{ url_for('change_password') }}" class="nav-link">
+            <span class="icon">🔐</span>
+            Change Password
+        </a>
+
+        <a href="{{ url_for('logout') }}" class="nav-link">
+            <span class="icon">🚪</span>
+            Logout
+        </a>
+
+    </aside>
+
+    <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <button class="mobile-menu" onclick="openSidebar()">☰</button>
+
+                <div>
+                    <h1>Backup Database</h1>
+                    <p>Protect your company records</p>
+                </div>
+
+            </div>
+
+            <div class="user-info">
+
+                <div class="user-text">
+                    <strong>{{ session.get('username', 'User') }}</strong>
+                    <span>{{ session.get('role', 'staff')|capitalize }}</span>
+                </div>
+
+                <div class="user-avatar">
+                    {{ session.get('username', 'U')[0]|upper }}
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- CONTENT -->
+        <section class="content">
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="flash">
+                            ✓ {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="page-header">
+                <h2>Database Backup</h2>
+                <p>Create a secure copy of your company database.</p>
+            </div>
+
+            <div class="card">
+
+                <div class="backup-icon">
+                    💾
+                </div>
+
+                <h3>Backup Your Database</h3>
+
+                <p>
+                    Your company database contains important information such as
+                    employee records, attendance records, users, company settings,
+                    and daily work records.
+                </p>
+
+                <div class="info-grid">
+
+                    <div class="info-box">
+                        <span>Database</span>
+                        <strong>Company Records</strong>
+                    </div>
+
+                    <div class="info-box">
+                        <span>Backup Type</span>
+                        <strong>Full Database</strong>
+                    </div>
+
+                    <div class="info-box">
+                        <span>Recommended</span>
+                        <strong>Regularly</strong>
+                    </div>
+
+                </div>
+
+                <form method="POST" action="{{ url_for('backup') }}">
+
+                    <button type="submit" class="backup-btn">
+                        💾 Create Database Backup
+                    </button>
+
+                </form>
+
+                <div class="warning">
+                    <strong>Important:</strong>
+                    After creating a backup, keep the downloaded backup file
+                    somewhere safe. It can be used to restore your company
+                    records if something happens to the main database.
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script>
+
+    function openSidebar() {
+        document.getElementById("sidebar").classList.add("open");
+        document.getElementById("overlay").classList.add("show");
+    }
+
+    function closeSidebar() {
+        document.getElementById("sidebar").classList.remove("open");
+        document.getElementById("overlay").classList.remove("show");
+    }
+
+</script>
+
+</body>
+</html>

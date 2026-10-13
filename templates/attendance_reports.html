@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {{ company_settings["company_name"] or "Company Records" }} - Attendance Reports
+    </title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Inter, Arial, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        body {
+            min-height: 100vh;
+        }
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #111827;
+            border-right: 1px solid #1e293b;
+            padding: 22px 14px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .brand {
+            padding: 8px 12px 24px;
+            border-bottom: 1px solid #1e293b;
+            margin-bottom: 18px;
+        }
+
+        .brand h2 {
+            margin: 0;
+            color: #ffffff;
+            font-size: 20px;
+        }
+
+        .brand p {
+            margin: 6px 0 0;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .menu-title {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 10px 12px 7px;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 11px 12px;
+            margin: 3px 0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .sidebar a:hover {
+            background: #1e293b;
+            color: #ffffff;
+        }
+
+        .sidebar a.active {
+            background: #2563eb;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .logout {
+            margin-top: 15px !important;
+            color: #fca5a5 !important;
+        }
+
+        .logout:hover {
+            background: #450a0a !important;
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .main {
+            margin-left: 250px;
+            padding: 28px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .page-title h1 {
+            margin: 0;
+            font-size: 28px;
+            color: #ffffff;
+        }
+
+        .page-title p {
+            margin: 6px 0 0;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: none;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .btn-blue {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-blue:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-green {
+            background: #059669;
+            color: white;
+        }
+
+        .btn-green:hover {
+            background: #047857;
+        }
+
+        .btn-red {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-red:hover {
+            background: #b91c1c;
+        }
+
+        .btn-gray {
+            background: #334155;
+            color: white;
+        }
+
+        .btn-gray:hover {
+            background: #475569;
+        }
+
+        /* =========================
+           SUMMARY CARDS
+        ========================= */
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .card {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::after {
+            content: "";
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            right: -25px;
+            top: -25px;
+            background: rgba(37, 99, 235, 0.10);
+        }
+
+        .card h3 {
+            margin: 0 0 10px;
+            color: #94a3b8;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .card p {
+            margin: 0;
+            color: #ffffff;
+            font-size: 30px;
+            font-weight: 700;
+        }
+
+        .card.total {
+            border-left: 4px solid #3b82f6;
+        }
+
+        .card.present {
+            border-left: 4px solid #10b981;
+        }
+
+        .card.absent {
+            border-left: 4px solid #ef4444;
+        }
+
+        .card.late {
+            border-left: 4px solid #f59e0b;
+        }
+
+        /* =========================
+           FILTER BOX
+        ========================= */
+
+        .filter-box {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 22px;
+        }
+
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .filter-header h2 {
+            margin: 0;
+            font-size: 17px;
+            color: #ffffff;
+        }
+
+        .filter-header span {
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .field label {
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        input,
+        select {
+            width: 100%;
+            height: 42px;
+            padding: 0 12px;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            background: #0f172a;
+            color: #e2e8f0;
+            outline: none;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.12);
+        }
+
+        .filter-actions {
+            display: flex;
+            align-items: end;
+            gap: 8px;
+        }
+
+        .filter-actions .btn {
+            height: 42px;
+            flex: 1;
+        }
+
+        /* =========================
+           ACTIVE FILTER INFO
+        ========================= */
+
+        .filter-info {
+            margin-top: 15px;
+            padding: 11px 13px;
+            border-radius: 8px;
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .filter-info strong {
+            color: #e2e8f0;
+        }
+
+        /* =========================
+           TABLE
+        ========================= */
+
+        .table-box {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 18px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .table-header h2 {
+            margin: 0;
+            color: #ffffff;
+            font-size: 17px;
+        }
+
+        .record-count {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 900px;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #0f172a;
+            color: #94a3b8;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 13px 15px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 13px 15px;
+            border-top: 1px solid #1e293b;
+            color: #cbd5e1;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background: rgba(30, 41, 59, 0.45);
+        }
+
+        .employee-name {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .employee-id {
+            color: #60a5fa;
+            font-size: 12px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .status-present {
+            background: rgba(16, 185, 129, 0.12);
+            color: #34d399;
+        }
+
+        .status-absent {
+            background: rgba(239, 68, 68, 0.12);
+            color: #f87171;
+        }
+
+        .status-late {
+            background: rgba(245, 158, 11, 0.12);
+            color: #fbbf24;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 50px 20px !important;
+            color: #64748b;
+        }
+
+        .empty-icon {
+            font-size: 35px;
+            margin-bottom: 8px;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1100;
+            width: 42px;
+            height: 42px;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            background: #111827;
+            color: white;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .sidebar-overlay {
+            display: none;
+        }
+
+        @media (max-width: 1150px) {
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filters {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filter-actions {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 750px) {
+            .mobile-menu {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.25s ease;
+                width: 260px;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.55);
+                z-index: 900;
+            }
+
+            .sidebar-overlay.show {
+                display: block;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 75px 15px 25px;
+            }
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .top-actions {
+                width: 100%;
+            }
+
+            .top-actions .btn {
+                flex: 1;
+            }
+
+            .cards {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            .card p {
+                font-size: 25px;
+            }
+
+            .filters {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-actions {
+                grid-column: auto;
+            }
+
+            .filter-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 450px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .top-actions {
+                flex-direction: column;
+            }
+
+            .top-actions .btn {
+                width: 100%;
+            }
+        }
+
+        /* =========================
+           PRINT
+        ========================= */
+
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+
+            .sidebar,
+            .mobile-menu,
+            .sidebar-overlay,
+            .top-actions,
+            .filter-box {
+                display: none !important;
+            }
+
+            .main {
+                margin: 0;
+                padding: 0;
+            }
+
+            .page-title h1 {
+                color: black;
+            }
+
+            .page-title p {
+                color: #555;
+            }
+
+            .cards {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .card,
+            .table-box {
+                background: white;
+                color: black;
+                border: 1px solid #ddd;
+                box-shadow: none;
+            }
+
+            .card h3,
+            .card p,
+            .table-header h2,
+            td,
+            th {
+                color: black;
+            }
+
+            th {
+                background: #eeeeee;
+            }
+
+            td {
+                border-color: #ddd;
+            }
+
+            .status {
+                color: black !important;
+                background: white !important;
+                border: 1px solid #999;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- MOBILE MENU -->
+<button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- =========================
+     SIDEBAR
+========================= -->
+
+<div class="sidebar" id="sidebar">
+
+    <div class="brand">
+        <h2>{{ company_settings["company_name"] or "Company Records" }}</h2>
+        <p>Management System</p>
+    </div>
+
+    <div class="menu-title">Main</div>
+
+    <a href="{{ url_for('dashboard') }}">
+        📊 Dashboard
+    </a>
+
+    <a href="{{ url_for('employees') }}">
+        👥 Employees
+    </a>
+
+    <a href="{{ url_for('attendance') }}">
+        🕒 Attendance
+    </a>
+
+    <a href="{{ url_for('reports') }}">
+        📄 Reports
+    </a>
+
+    <a href="{{ url_for('attendance_reports') }}" class="active">
+        📈 Attendance Reports
+    </a>
+
+    {% if session.get('role') == 'admin' %}
+
+        <div class="menu-title">Administration</div>
+
+        <a href="{{ url_for('users') }}">
+            👤 Users
+        </a>
+
+        <a href="{{ url_for('settings') }}">
+            ⚙️ Company Settings
+        </a>
+
+        <a href="{{ url_for('backup') }}">
+            💾 Backup
+        </a>
+
+        <a href="{{ url_for('restore') }}">
+            ♻️ Restore
+        </a>
+
+    {% endif %}
+
+    <div class="menu-title">Account</div>
+
+    <a href="{{ url_for('change_password') }}">
+        🔐 Change Password
+    </a>
+
+    <a href="{{ url_for('logout') }}" class="logout">
+        🚪 Logout
+    </a>
+
+</div>
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<div class="main">
+
+    <div class="topbar">
+
+        <div class="page-title">
+            <h1>Attendance Reports</h1>
+
+            <p>
+                Review and analyze employee attendance records.
+            </p>
+        </div>
+
+        <div class="top-actions">
+
+            <button
+                type="button"
+                class="btn btn-gray"
+                onclick="window.print()"
+            >
+                🖨️ Print
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- =========================
+         SUMMARY
+    ========================= -->
+
+    <div class="cards">
+
+        <div class="card total">
+            <h3>Total Records</h3>
+            <p>{{ total }}</p>
+        </div>
+
+        <div class="card present">
+            <h3>Present</h3>
+            <p>{{ present }}</p>
+        </div>
+
+        <div class="card absent">
+            <h3>Absent</h3>
+            <p>{{ absent }}</p>
+        </div>
+
+        <div class="card late">
+            <h3>Late</h3>
+            <p>{{ late }}</p>
+        </div>
+
+    </div>
+
+    <!-- =========================
+         FILTERS
+    ========================= -->
+
+    <div class="filter-box">
+
+        <div class="filter-header">
+
+            <div>
+                <h2>Filter Attendance</h2>
+            </div>
+
+            <span>
+                Narrow down the records you want to view
+            </span>
+
+        </div>
+
+        <form
+            method="GET"
+            action="{{ url_for('attendance_reports') }}"
+            onsubmit="return validateDates()"
+        >
+
+            <div class="filters">
+
+                <div class="field">
+
+                    <label>From Date</label>
+
+                    <input
+                        type="date"
+                        id="from_date"
+                        name="from_date"
+                        value="{{ request.args.get('from_date', '') }}"
+                    >
+
+                </div>
+
+                <div class="field">
+
+                    <label>To Date</label>
+
+                    <input
+                        type="date"
+                        id="to_date"
+                        name="to_date"
+                        value="{{ request.args.get('to_date', '') }}"
+                    >
+
+                </div>
+
+                <div class="field">
+
+                    <label>Employee</label>
+
+                    <select name="employee">
+
+                        <option value="">
+                            All Employees
+                        </option>
+
+                        {% for employee in employees %}
+
+                            <option
+                                value="{{ employee['employee_id'] }}"
+                                {% if request.args.get('employee') == employee['employee_id'] %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ employee['full_name'] }}
+                                {% if employee['employee_id'] %}
+                                    — {{ employee['employee_id'] }}
+                                {% endif %}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <div class="field">
+
+                    <label>Department</label>
+
+                    <select name="department">
+
+                        <option value="">
+                            All Departments
+                        </option>
+
+                        {% for department in departments %}
+
+                            <option
+                                value="{{ department }}"
+                                {% if request.args.get('department') == department %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ department }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <div class="field">
+
+                    <label>Status</label>
+
+                    <select name="status">
+
+                        <option value="">
+                            All Status
+                        </option>
+
+                        <option
+                            value="Present"
+                            {% if request.args.get('status') == 'Present' %}
+                                selected
+                            {% endif %}
+                        >
+                            Present
+                        </option>
+
+                        <option
+                            value="Absent"
+                            {% if request.args.get('status') == 'Absent' %}
+                                selected
+                            {% endif %}
+                        >
+                            Absent
+                        </option>
+
+                        <option
+                            value="Late"
+                            {% if request.args.get('status') == 'Late' %}
+                                selected
+                            {% endif %}
+                        >
+                            Late
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="filter-actions">
+
+                    <button
+                        type="submit"
+                        class="btn btn-blue"
+                    >
+                        🔍 Apply Filters
+                    </button>
+
+                    <a
+                        href="{{ url_for('attendance_reports') }}"
+                        class="btn btn-gray"
+                    >
+                        ✕ Clear
+                    </a>
+
+                </div>
+
+            </div>
+
+        </form>
+
+        <div class="filter-info">
+
+            {% if request.args.get('from_date')
+                or request.args.get('to_date')
+                or request.args.get('employee')
+                or request.args.get('department')
+                or request.args.get('status') %}
+
+                <strong>Active filters:</strong>
+
+                {% if request.args.get('from_date') %}
+                    From {{ request.args.get('from_date') }}
+                {% endif %}
+
+                {% if request.args.get('to_date') %}
+                    to {{ request.args.get('to_date') }}
+                {% endif %}
+
+                {% if request.args.get('employee') %}
+                    • Employee selected
+                {% endif %}
+
+                {% if request.args.get('department') %}
+                    • Department: {{ request.args.get('department') }}
+                {% endif %}
+
+                {% if request.args.get('status') %}
+                    • Status: {{ request.args.get('status') }}
+                {% endif %}
+
+            {% else %}
+
+                Showing all attendance records.
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <!-- =========================
+         TABLE
+    ========================= -->
+
+    <div class="table-box">
+
+        <div class="table-header">
+
+            <h2>Attendance Records</h2>
+
+            <span class="record-count">
+                {{ total }} record{% if total != 1 %}s{% endif %}
+            </span>
+
+        </div>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>#</th>
+                        <th>Date</th>
+                        <th>Employee ID</th>
+                        <th>Staff Name</th>
+                        <th>Check In</th>
+                        <th>Check Out</th>
+                        <th>Status</th>
+                        <th>Remarks</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for record in records %}
+
+                    <tr>
+
+                        <td>
+                            {{ loop.index }}
+                        </td>
+
+                        <td>
+                            {{ record['attendance_date'] }}
+                        </td>
+
+                        <td>
+                            <span class="employee-id">
+                                {{ record['employee_id'] or '-' }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="employee-name">
+                                {{ record['staff_name'] or '-' }}
+                            </span>
+                        </td>
+
+                        <td>
+                            {{ record['check_in'] or '-' }}
+                        </td>
+
+                        <td>
+                            {{ record['check_out'] or '-' }}
+                        </td>
+
+                        <td>
+
+                            {% if record['status'] == 'Present' %}
+
+                                <span class="status status-present">
+                                    Present
+                                </span>
+
+                            {% elif record['status'] == 'Absent' %}
+
+                                <span class="status status-absent">
+                                    Absent
+                                </span>
+
+                            {% elif record['status'] == 'Late' %}
+
+                                <span class="status status-late">
+                                    Late
+                                </span>
+
+                            {% else %}
+
+                                <span class="status">
+                                    {{ record['status'] or '-' }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+                            {{ record['remarks'] or '-' }}
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="8"
+                            class="empty"
+                        >
+
+                            <div class="empty-icon">
+                                📭
+                            </div>
+
+                            <div>
+                                No attendance records found.
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    function toggleSidebar() {
+
+        const sidebar =
+            document.getElementById("sidebar");
+
+        const overlay =
+            document.getElementById("sidebarOverlay");
+
+        sidebar.classList.toggle("open");
+        overlay.classList.toggle("show");
+    }
+
+
+    function closeSidebar() {
+
+        const sidebar =
+            document.getElementById("sidebar");
+
+        const overlay =
+            document.getElementById("sidebarOverlay");
+
+        sidebar.classList.remove("open");
+        overlay.classList.remove("show");
+    }
+
+
+    document.addEventListener("keydown", function(event) {
+
+        if (event.key === "Escape") {
+            closeSidebar();
+        }
+
+    });
+
+
+    function validateDates() {
+
+        const from =
+            document.getElementById("from_date").value;
+
+        const to =
+            document.getElementById("to_date").value;
+
+        if (from && to && from > to) {
+
+            alert(
+                "The From Date cannot be later than the To Date."
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Company Records - Users</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+            font-family: Inter, Arial, Helvetica, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        body {
+            min-height: 100vh;
+        }
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #111827;
+            border-right: 1px solid #1e293b;
+            padding: 22px 14px;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.25s ease;
+        }
+
+        .brand {
+            padding: 8px 12px 24px;
+            border-bottom: 1px solid #1e293b;
+            margin-bottom: 18px;
+        }
+
+        .brand h2 {
+            margin: 0;
+            color: #ffffff;
+            font-size: 20px;
+        }
+
+        .brand h2 span {
+            color: #3b82f6;
+        }
+
+        .brand p {
+            margin: 6px 0 0;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .menu-title {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 10px 12px 7px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .sidebar-menu li {
+            margin: 3px 0;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 11px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .sidebar-menu a:hover {
+            background: #1e293b;
+            color: #ffffff;
+        }
+
+        .sidebar-menu a.active {
+            background: #2563eb;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .menu-icon {
+            width: 22px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .logout-link {
+            color: #fca5a5 !important;
+            margin-top: 12px;
+        }
+
+        .logout-link:hover {
+            background: #450a0a !important;
+            color: #ffffff !important;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            left: 15px;
+            top: 15px;
+            width: 42px;
+            height: 42px;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            background: #111827;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 1200;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 900;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .main {
+            margin-left: 250px;
+            min-height: 100vh;
+            background: #0f172a;
+        }
+
+        /* =========================
+           TOPBAR
+        ========================= */
+
+        .topbar {
+            min-height: 72px;
+            background: #111827;
+            border-bottom: 1px solid #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 14px 30px;
+            position: sticky;
+            top: 0;
+            z-index: 800;
+        }
+
+        .page-title h1 {
+            margin: 0;
+            color: #f8fafc;
+            font-size: 22px;
+        }
+
+        .page-title p {
+            margin: 5px 0 0;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .profile-text strong {
+            display: block;
+            color: #f8fafc;
+            font-size: 13px;
+        }
+
+        .profile-text span {
+            display: block;
+            margin-top: 2px;
+            color: #94a3b8;
+            font-size: 11px;
+            text-transform: capitalize;
+        }
+
+        /* =========================
+           CONTENT
+        ========================= */
+
+        .content {
+            width: 94%;
+            max-width: 1250px;
+            margin: 28px auto;
+        }
+
+        /* =========================
+           FLASH
+        ========================= */
+
+        .flash {
+            padding: 13px 16px;
+            border-radius: 9px;
+            margin-bottom: 18px;
+            font-size: 13px;
+            border: 1px solid transparent;
+        }
+
+        .flash.success {
+            background: rgba(16,185,129,0.12);
+            border-color: #065f46;
+            color: #6ee7b7;
+        }
+
+        .flash.error {
+            background: rgba(239,68,68,0.12);
+            border-color: #7f1d1d;
+            color: #fca5a5;
+        }
+
+        .flash.warning {
+            background: rgba(245,158,11,0.12);
+            border-color: #78350f;
+            color: #fcd34d;
+        }
+
+        .flash.info {
+            background: rgba(59,130,246,0.12);
+            border-color: #1e40af;
+            color: #93c5fd;
+        }
+
+        /* =========================
+           SUMMARY
+        ========================= */
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .summary-card {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .summary-card::after {
+            content: "";
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            right: -30px;
+            top: -30px;
+            border-radius: 50%;
+            background: rgba(59,130,246,0.08);
+        }
+
+        .summary-label {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .summary-number {
+            color: #ffffff;
+            font-size: 29px;
+            font-weight: 700;
+        }
+
+        .summary-card.total {
+            border-left: 4px solid #3b82f6;
+        }
+
+        .summary-card.admin {
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .summary-card.staff {
+            border-left: 4px solid #10b981;
+        }
+
+        /* =========================
+           SECTION
+        ========================= */
+
+        .section {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 22px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        /* =========================
+           FORM
+        ========================= */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            color: #cbd5e1;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            height: 43px;
+            padding: 0 12px;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            outline: none;
+            background: #0f172a;
+            color: #f8fafc;
+            font-size: 13px;
+        }
+
+        input::placeholder {
+            color: #64748b;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+        }
+
+        select option {
+            background: #111827;
+            color: white;
+        }
+
+        .password-note {
+            margin-top: 6px;
+            color: #64748b;
+            font-size: 10px;
+        }
+
+        .form-actions {
+            margin-top: 18px;
+            display: flex;
+            gap: 9px;
+        }
+
+        .primary-btn {
+            border: none;
+            background: #2563eb;
+            color: white;
+            padding: 11px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .primary-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .primary-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        /* =========================
+           TABLE
+        ========================= */
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 650px;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #0f172a;
+            color: #94a3b8;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 13px 12px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 14px 12px;
+            border-top: 1px solid #1e293b;
+            color: #cbd5e1;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background: rgba(30,41,59,0.45);
+        }
+
+        .number {
+            color: #64748b;
+        }
+
+        .username {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .current-user {
+            color: #60a5fa;
+            font-size: 10px;
+            margin-left: 5px;
+        }
+
+        /* =========================
+           ROLE BADGES
+        ========================= */
+
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .role-admin {
+            background: rgba(139,92,246,0.15);
+            color: #c4b5fd;
+        }
+
+        .role-staff {
+            background: rgba(16,185,129,0.12);
+            color: #6ee7b7;
+        }
+
+        /* =========================
+           ACTIONS
+        ========================= */
+
+        .actions {
+            display: flex;
+            gap: 7px;
+            flex-wrap: wrap;
+        }
+
+        .edit-btn,
+        .delete-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 7px 11px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .edit-btn {
+            background: rgba(37,99,235,0.15);
+            color: #93c5fd;
+        }
+
+        .edit-btn:hover {
+            background: #2563eb;
+            color: white;
+        }
+
+        .delete-btn {
+            background: rgba(239,68,68,0.13);
+            color: #fca5a5;
+            border: none;
+        }
+
+        .delete-btn:hover {
+            background: #dc2626;
+            color: white;
+        }
+
+        .disabled-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 7px 11px;
+            border-radius: 6px;
+            background: #1e293b;
+            color: #64748b;
+            font-size: 11px;
+        }
+
+        .delete-form {
+            display: inline;
+        }
+
+        /* =========================
+           EMPTY
+        ========================= */
+
+        .empty {
+            text-align: center;
+            padding: 45px 20px !important;
+            color: #64748b;
+        }
+
+        .empty-icon {
+            font-size: 35px;
+            margin-bottom: 8px;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            text-align: center;
+            color: #475569;
+            font-size: 11px;
+            padding: 25px;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 1000px) {
+
+            .summary-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+        }
+
+        @media (max-width: 750px) {
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                width: 260px;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .topbar {
+                padding: 15px 15px 15px 70px;
+                min-height: 70px;
+            }
+
+            .content {
+                width: 94%;
+                margin: 20px auto;
+            }
+
+            .profile-text {
+                display: none;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 17px;
+            }
+
+        }
+
+        @media (max-width: 450px) {
+
+            .page-title h1 {
+                font-size: 19px;
+            }
+
+            .page-title p {
+                font-size: 11px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<button
+    class="mobile-menu"
+    id="mobileMenu"
+    onclick="toggleSidebar()"
+>
+    ☰
+</button>
+
+<div
+    class="sidebar-overlay"
+    id="sidebarOverlay"
+    onclick="closeSidebar()"
+></div>
+
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar" id="sidebar">
+
+    <div class="brand">
+
+        <h2>
+            Company <span>Records</span>
+        </h2>
+
+        <p>
+            Management System
+        </p>
+
+    </div>
+
+
+    <div class="menu-title">
+        Main
+    </div>
+
+
+    <ul class="sidebar-menu">
+
+        <li>
+            <a href="{{ url_for('dashboard') }}">
+                <span class="menu-icon">📊</span>
+                Dashboard
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('employees') }}">
+                <span class="menu-icon">👥</span>
+                Employees
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('attendance') }}">
+                <span class="menu-icon">🕒</span>
+                Attendance
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('reports') }}">
+                <span class="menu-icon">📄</span>
+                Reports
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('attendance_reports') }}">
+                <span class="menu-icon">📈</span>
+                Attendance Reports
+            </a>
+        </li>
+
+    </ul>
+
+
+    {% if session.get('role') == 'admin' %}
+
+        <div class="menu-title">
+            Administration
+        </div>
+
+        <ul class="sidebar-menu">
+
+            <li>
+                <a
+                    href="{{ url_for('users') }}"
+                    class="active"
+                >
+                    <span class="menu-icon">👤</span>
+                    Users
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('settings') }}">
+                    <span class="menu-icon">⚙️</span>
+                    Company Settings
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('backup') }}">
+                    <span class="menu-icon">💾</span>
+                    Backup
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('restore') }}">
+                    <span class="menu-icon">♻️</span>
+                    Restore
+                </a>
+            </li>
+
+        </ul>
+
+    {% endif %}
+
+
+    <div class="menu-title">
+        Account
+    </div>
+
+    <ul class="sidebar-menu">
+
+        <li>
+            <a href="{{ url_for('change_password') }}">
+                <span class="menu-icon">🔐</span>
+                Change Password
+            </a>
+        </li>
+
+        <li>
+            <a
+                href="{{ url_for('logout') }}"
+                class="logout-link"
+            >
+                <span class="menu-icon">🚪</span>
+                Logout
+            </a>
+        </li>
+
+    </ul>
+
+</aside>
+
+
+<!-- MAIN -->
+
+<div class="main">
+
+    <header class="topbar">
+
+        <div class="page-title">
+
+            <h1>
+                User Management
+            </h1>
+
+            <p>
+                Manage system users and access permissions
+            </p>
+
+        </div>
+
+
+        <div class="profile">
+
+            <div class="profile-avatar">
+                {{ session.get("username", "U")[0]|upper }}
+            </div>
+
+            <div class="profile-text">
+
+                <strong>
+                    {{ session.get("username", "User") }}
+                </strong>
+
+                <span>
+                    {{ session.get("role", "staff") }}
+                </span>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <main class="content">
+
+        <!-- FLASH MESSAGES -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                {% for category, message in messages %}
+
+                    <div class="flash {{ category }}">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <!-- SUMMARY -->
+
+        {% set admin_count = namespace(value=0) %}
+        {% set staff_count = namespace(value=0) %}
+
+        {% for user in users %}
+
+            {% if user['role'] == 'admin' %}
+
+                {% set admin_count.value = admin_count.value + 1 %}
+
+            {% else %}
+
+                {% set staff_count.value = staff_count.value + 1 %}
+
+            {% endif %}
+
+        {% endfor %}
+
+
+        <div class="summary-grid">
+
+            <div class="summary-card total">
+
+                <div class="summary-label">
+                    Total Users
+                </div>
+
+                <div class="summary-number">
+                    {{ users|length }}
+                </div>
+
+            </div>
+
+
+            <div class="summary-card admin">
+
+                <div class="summary-label">
+                    Administrators
+                </div>
+
+                <div class="summary-number">
+                    {{ admin_count.value }}
+                </div>
+
+            </div>
+
+
+            <div class="summary-card staff">
+
+                <div class="summary-label">
+                    Staff Accounts
+                </div>
+
+                <div class="summary-number">
+                    {{ staff_count.value }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ADD USER -->
+
+        <section class="section">
+
+            <div class="section-header">
+
+                <div>
+
+                    <div class="section-title">
+                        Add New User
+                    </div>
+
+                    <div class="section-subtitle">
+                        Create an account and assign the appropriate access level.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <form
+                method="POST"
+                action="{{ url_for('users') }}"
+                onsubmit="return preventDoubleSubmit(this)"
+            >
+
+                <div class="form-grid">
+
+
+                    <div class="form-group">
+
+                        <label for="username">
+                            Username
+                        </label>
+
+                        <input
+                            id="username"
+                            type="text"
+                            name="username"
+                            placeholder="Enter username"
+                            autocomplete="username"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="password">
+                            Password
+                        </label>
+
+                        <input
+                            id="password"
+                            type="password"
+                            name="password"
+                            placeholder="Minimum 8 characters"
+                            autocomplete="new-password"
+                            required
+                        >
+
+                        <div class="password-note">
+                            Use at least 8 characters with letters and numbers.
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="role">
+                            Access Role
+                        </label>
+
+                        <select
+                            id="role"
+                            name="role"
+                            required
+                        >
+
+                            <option value="staff">
+                                Staff
+                            </option>
+
+                            <option value="admin">
+                                Administrator
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        type="submit"
+                        class="primary-btn"
+                        id="createUserButton"
+                    >
+                        + Create User
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <!-- USERS TABLE -->
+
+        <section class="section">
+
+            <div class="section-header">
+
+                <div>
+
+                    <div class="section-title">
+                        System Users
+                    </div>
+
+                    <div class="section-subtitle">
+                        View and manage all registered accounts.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>#</th>
+
+                            <th>Username</th>
+
+                            <th>Role</th>
+
+                            <th>Actions</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for user in users %}
+
+                            <tr>
+
+                                <td class="number">
+                                    {{ loop.index }}
+                                </td>
+
+
+                                <td>
+
+                                    <span class="username">
+                                        {{ user['username'] }}
+                                    </span>
+
+
+                                    {% if user['username'] == session.get("username") %}
+
+                                        <span class="current-user">
+                                            (You)
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td>
+
+                                    {% if user['role'] == 'admin' %}
+
+                                        <span class="role-badge role-admin">
+                                            Administrator
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="role-badge role-staff">
+                                            Staff
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td>
+
+                                    <div class="actions">
+
+                                        <a
+                                            href="{{ url_for('edit_user', user_id=user['id']) }}"
+                                            class="edit-btn"
+                                        >
+                                            ✏️ Edit
+                                        </a>
+
+
+                                        {% if user['username'] != session.get("username") %}
+
+                                            <form
+                                                method="POST"
+                                                action="{{ url_for('delete_user', user_id=user['id']) }}"
+                                                class="delete-form"
+                                                onsubmit="return confirmDelete('{{ user['username'] }}');"
+                                            >
+
+                                                <button
+                                                    type="submit"
+                                                    class="delete-btn"
+                                                >
+                                                    🗑️ Delete
+                                                </button>
+
+                                            </form>
+
+                                        {% else %}
+
+                                            <span class="disabled-btn">
+                                                Current Account
+                                            </span>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        {% else %}
+
+                            <tr>
+
+                                <td
+                                    colspan="4"
+                                    class="empty"
+                                >
+
+                                    <div class="empty-icon">
+                                        👤
+                                    </div>
+
+                                    No users found.
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+        Company Records System &copy; 2026
+    </footer>
+
+</div>
+
+
+<script>
+
+    function toggleSidebar() {
+
+        const sidebar =
+            document.getElementById("sidebar");
+
+        const overlay =
+            document.getElementById("sidebarOverlay");
+
+        sidebar.classList.toggle("open");
+
+        overlay.classList.toggle("show");
+
+    }
+
+
+    function closeSidebar() {
+
+        const sidebar =
+            document.getElementById("sidebar");
+
+        const overlay =
+            document.getElementById("sidebarOverlay");
+
+        sidebar.classList.remove("open");
+
+        overlay.classList.remove("show");
+
+    }
+
+
+    document.addEventListener("keydown", function(event) {
+
+        if (event.key === "Escape") {
+
+            closeSidebar();
+
+        }
+
+    });
+
+
+    function confirmDelete(username) {
+
+        return confirm(
+            "Are you sure you want to delete the user \"" +
+            username +
+            "\"?\n\nThis action cannot be undone."
+        );
+
+    }
+
+
+    function preventDoubleSubmit(form) {
+
+        const button =
+            document.getElementById("createUserButton");
+
+        if (button) {
+
+            button.disabled = true;
+
+            button.innerText = "Creating...";
+
+        }
+
+        return true;
+
+    }
+
+</script>
+
+</body>
+</html>

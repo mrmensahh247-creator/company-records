@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Login | Company Records</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background-image:
+
+                linear-gradient(
+                    rgba(15, 23, 42, 0.78),
+                    rgba(15, 23, 42, 0.88)
+                ),
+
+                url("{{ url_for('static', filename='background.jpg') }}");
+
+            background-size: cover;
+
+            background-position: center;
+
+            background-repeat: no-repeat;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 20px;
+
+        }
+
+
+        /* =========================================
+           LOGIN CONTAINER
+           ========================================= */
+
+        .login-box {
+
+            width: 100%;
+
+            max-width: 440px;
+
+            background: rgba(30, 41, 59, 0.96);
+
+            border: 1px solid rgba(148, 163, 184, 0.2);
+
+            border-radius: 18px;
+
+            padding: 38px;
+
+            text-align: center;
+
+            box-shadow:
+                0 25px 60px rgba(0, 0, 0, 0.45);
+
+            backdrop-filter: blur(10px);
+
+            animation: fadeIn 0.5s ease;
+
+        }
+
+
+        @keyframes fadeIn {
+
+            from {
+
+                opacity: 0;
+
+                transform: translateY(15px);
+
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform: translateY(0);
+
+            }
+
+        }
+
+
+        /* =========================================
+           LOGO
+           ========================================= */
+
+        .logo-container {
+
+            display: flex;
+
+            justify-content: center;
+
+            margin-bottom: 18px;
+
+        }
+
+
+        .logo {
+
+            width: 115px;
+
+            height: 115px;
+
+            object-fit: contain;
+
+            border-radius: 15px;
+
+        }
+
+
+        /* =========================================
+           TITLE
+           ========================================= */
+
+        h1 {
+
+            color: #f8fafc;
+
+            font-size: 27px;
+
+            margin-bottom: 8px;
+
+            font-weight: 700;
+
+        }
+
+
+        .subtitle {
+
+            color: #94a3b8;
+
+            font-size: 14px;
+
+            margin-bottom: 28px;
+
+        }
+
+
+        /* =========================================
+           FLASH MESSAGE
+           ========================================= */
+
+        .flash {
+
+            padding: 12px 14px;
+
+            margin-bottom: 20px;
+
+            border-radius: 8px;
+
+            background: #450a0a;
+
+            border: 1px solid #991b1b;
+
+            color: #fecaca;
+
+            font-size: 13px;
+
+            text-align: left;
+
+        }
+
+
+        /* =========================================
+           FORM
+           ========================================= */
+
+        .form-group {
+
+            text-align: left;
+
+            margin-bottom: 18px;
+
+        }
+
+
+        label {
+
+            display: block;
+
+            margin-bottom: 8px;
+
+            font-size: 13px;
+
+            font-weight: bold;
+
+            color: #cbd5e1;
+
+        }
+
+
+        .input-wrapper {
+
+            position: relative;
+
+        }
+
+
+        input {
+
+            width: 100%;
+
+            padding: 13px 14px;
+
+            border: 1px solid #475569;
+
+            border-radius: 9px;
+
+            background: #0f172a;
+
+            color: #f8fafc;
+
+            font-size: 14px;
+
+            outline: none;
+
+            transition: 0.2s;
+
+        }
+
+
+        input::placeholder {
+
+            color: #64748b;
+
+        }
+
+
+        input:focus {
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px rgba(37, 99, 235, 0.15);
+
+        }
+
+
+        /* =========================================
+           PASSWORD TOGGLE
+           ========================================= */
+
+        .password-wrapper {
+
+            position: relative;
+
+        }
+
+
+        .password-wrapper input {
+
+            padding-right: 48px;
+
+        }
+
+
+        .toggle-password {
+
+            position: absolute;
+
+            right: 12px;
+
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            border: none;
+
+            background: transparent;
+
+            color: #94a3b8;
+
+            cursor: pointer;
+
+            font-size: 17px;
+
+            padding: 4px;
+
+            width: auto;
+
+        }
+
+
+        .toggle-password:hover {
+
+            color: #f8fafc;
+
+            background: transparent;
+
+        }
+
+
+        /* =========================================
+           LOGIN BUTTON
+           ========================================= */
+
+        .login-button {
+
+            width: 100%;
+
+            padding: 14px;
+
+            margin-top: 5px;
+
+            border: none;
+
+            border-radius: 9px;
+
+            background: #2563eb;
+
+            color: white;
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+
+        }
+
+
+        .login-button:hover {
+
+            background: #1d4ed8;
+
+            transform: translateY(-1px);
+
+        }
+
+
+        .login-button:active {
+
+            transform: translateY(0);
+
+        }
+
+
+        /* =========================================
+           LOADING STATE
+           ========================================= */
+
+        .login-button.loading {
+
+            opacity: 0.75;
+
+            cursor: wait;
+
+        }
+
+
+        /* =========================================
+           SECURITY NOTICE
+           ========================================= */
+
+        .security-note {
+
+            margin-top: 22px;
+
+            padding: 10px;
+
+            border-radius: 8px;
+
+            background: rgba(15, 23, 42, 0.7);
+
+            color: #64748b;
+
+            font-size: 11px;
+
+        }
+
+
+        .security-note span {
+
+            color: #60a5fa;
+
+        }
+
+
+        /* =========================================
+           FOOTER
+           ========================================= */
+
+        .footer {
+
+            margin-top: 18px;
+
+            font-size: 11px;
+
+            color: #64748b;
+
+        }
+
+
+        /* =========================================
+           MOBILE
+           ========================================= */
+
+        @media (max-width: 500px) {
+
+            body {
+
+                padding: 15px;
+
+            }
+
+
+            .login-box {
+
+                padding: 30px 22px;
+
+                border-radius: 15px;
+
+            }
+
+
+            .logo {
+
+                width: 95px;
+
+                height: 95px;
+
+            }
+
+
+            h1 {
+
+                font-size: 23px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="login-box">
+
+
+    <!-- LOGO -->
+
+    <div class="logo-container">
+
+        <img
+            src="{{ url_for('static', filename='logo.png') }}"
+            alt="Company Records Logo"
+            class="logo"
+        >
+
+    </div>
+
+
+    <!-- TITLE -->
+
+    <h1>
+        Company Records
+    </h1>
+
+
+    <p class="subtitle">
+        Daily Records Management System
+    </p>
+
+
+    <!-- FLASH MESSAGES -->
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+                <div class="flash">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- LOGIN FORM -->
+
+    <form
+        method="POST"
+        id="loginForm"
+    >
+
+
+        <!-- USERNAME -->
+
+        <div class="form-group">
+
+            <label for="username">
+                Username
+            </label>
+
+
+            <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Enter your username"
+                autocomplete="username"
+                required
+                autofocus
+            >
+
+        </div>
+
+
+        <!-- PASSWORD -->
+
+        <div class="form-group">
+
+            <label for="password">
+                Password
+            </label>
+
+
+            <div class="password-wrapper">
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                    required
+                >
+
+
+                <button
+                    type="button"
+                    class="toggle-password"
+                    id="togglePassword"
+                    onclick="togglePasswordVisibility()"
+                    aria-label="Show password"
+                >
+                    👁
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- LOGIN -->
+
+        <button
+            type="submit"
+            class="login-button"
+            id="loginButton"
+        >
+            Login
+        </button>
+
+
+    </form>
+
+
+    <!-- SECURITY -->
+
+    <div class="security-note">
+
+        🔒
+        <span>Secure Login</span>
+        —
+        Your account is protected by password authentication.
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <div class="footer">
+
+        Company Records Management System
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+    /* =========================================
+       SHOW / HIDE PASSWORD
+       ========================================= */
+
+    function togglePasswordVisibility() {
+
+        const password =
+            document.getElementById("password");
+
+        const button =
+            document.getElementById("togglePassword");
+
+
+        if (password.type === "password") {
+
+            password.type = "text";
+
+            button.textContent = "🙈";
+
+            button.setAttribute(
+                "aria-label",
+                "Hide password"
+            );
+
+        }
+
+        else {
+
+            password.type = "password";
+
+            button.textContent = "👁";
+
+            button.setAttribute(
+                "aria-label",
+                "Show password"
+            );
+
+        }
+
+    }
+
+
+    /* =========================================
+       LOGIN BUTTON LOADING
+       ========================================= */
+
+    document
+        .getElementById("loginForm")
+        .addEventListener("submit", function () {
+
+            const button =
+                document.getElementById("loginButton");
+
+            button.classList.add("loading");
+
+            button.textContent = "Signing in...";
+
+        });
+
+
+</script>
+
+
+</body>
+
+</html>

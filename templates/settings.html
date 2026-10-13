@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Company Settings</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            min-height: 100%;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        body {
+            min-height: 100vh;
+        }
+
+        /* =========================
+           LAYOUT
+        ========================= */
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+
+        .sidebar {
+            width: 250px;
+            background: #111827;
+            color: white;
+            padding: 25px 15px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            overflow-y: auto;
+            border-right: 1px solid #1f2937;
+            z-index: 1000;
+        }
+
+
+        .brand {
+            padding: 5px 15px 30px;
+            border-bottom: 1px solid #374151;
+            margin-bottom: 20px;
+        }
+
+
+        .brand h2 {
+            font-size: 20px;
+            margin-bottom: 5px;
+            color: #f8fafc;
+            word-break: break-word;
+        }
+
+
+        .brand p {
+            color: #9ca3af;
+            font-size: 12px;
+        }
+
+
+        .menu-title {
+            color: #64748b;
+            font-size: 11px;
+            text-transform: uppercase;
+            margin: 20px 15px 8px;
+            letter-spacing: 1px;
+        }
+
+
+        .sidebar a {
+            display: block;
+            text-decoration: none;
+            color: #cbd5e1;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+
+        .sidebar a:hover {
+            background: #1e293b;
+            color: white;
+            transform: translateX(2px);
+        }
+
+
+        .sidebar a.active {
+            background: #2563eb;
+            color: white;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+
+
+        .logout {
+            margin-top: 20px;
+            border-top: 1px solid #374151;
+            padding-top: 20px;
+        }
+
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .main {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            min-height: 100vh;
+            padding: 30px;
+            background: #0f172a;
+        }
+
+
+        /* =========================
+           TOPBAR
+        ========================= */
+
+        .topbar {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 20px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+
+        .mobile-menu {
+            display: none;
+            background: #2563eb;
+            border: none;
+            color: white;
+            width: 42px;
+            height: 42px;
+            border-radius: 8px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+
+        .topbar h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+            color: #f8fafc;
+        }
+
+
+        .topbar p {
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+
+        .user-info {
+            text-align: right;
+        }
+
+
+        .user-info strong {
+            display: block;
+            font-size: 14px;
+            color: #f8fafc;
+        }
+
+
+        .role {
+            color: #60a5fa;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+
+        /* =========================
+           FLASH MESSAGES
+        ========================= */
+
+        .flash {
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+
+        .flash.success {
+            background: #052e16;
+            color: #86efac;
+            border: 1px solid #166534;
+        }
+
+
+        .flash.error {
+            background: #450a0a;
+            color: #fca5a5;
+            border: 1px solid #991b1b;
+        }
+
+
+        .flash.warning {
+            background: #451a03;
+            color: #fcd34d;
+            border: 1px solid #92400e;
+        }
+
+
+        .flash.info {
+            background: #172554;
+            color: #93c5fd;
+            border: 1px solid #1d4ed8;
+        }
+
+
+        /* =========================
+           SETTINGS GRID
+        ========================= */
+
+        .settings-wrapper {
+            max-width: 1100px;
+        }
+
+
+        .settings-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 14px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #334155;
+        }
+
+
+        .card-icon {
+            width: 52px;
+            height: 52px;
+            background: #172554;
+            border: 1px solid #1e40af;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+
+        .card-header h2 {
+            font-size: 20px;
+            margin-bottom: 6px;
+            color: #f8fafc;
+        }
+
+
+        .card-header p {
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+
+        /* =========================
+           FORM
+        ========================= */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+
+        label {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+        }
+
+
+        .required {
+            color: #60a5fa;
+        }
+
+
+        input,
+        textarea {
+            width: 100%;
+            background: #0f172a;
+            color: #f8fafc;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            padding: 12px 13px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+
+        input::placeholder,
+        textarea::placeholder {
+            color: #64748b;
+        }
+
+
+        input:hover,
+        textarea:hover {
+            border-color: #64748b;
+        }
+
+
+        input:focus,
+        textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+
+        textarea {
+            min-height: 130px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+
+        .hint {
+            color: #64748b;
+            font-size: 11px;
+            margin-top: 6px;
+        }
+
+
+        /* =========================
+           BUTTON
+        ========================= */
+
+        .button-row {
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1px solid #334155;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+
+        .save-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 13px 25px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+
+        .save-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(37, 99, 235, 0.25);
+        }
+
+
+        .save-btn:active {
+            transform: translateY(0);
+        }
+
+
+        /* =========================
+           INFO BOX
+        ========================= */
+
+        .info-box {
+            margin-top: 20px;
+            background: #172554;
+            border: 1px solid #1e40af;
+            border-radius: 10px;
+            padding: 18px;
+            color: #bfdbfe;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+
+        .info-box strong {
+            color: #93c5fd;
+        }
+
+
+        /* =========================
+           QUICK INFORMATION
+        ========================= */
+
+        .quick-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+
+        .info-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 18px;
+        }
+
+
+        .info-card-title {
+            color: #64748b;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+
+        .info-card-value {
+            color: #e2e8f0;
+            font-size: 14px;
+            font-weight: bold;
+            word-break: break-word;
+        }
+
+
+        /* =========================
+           SCROLLBAR
+        ========================= */
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+
+
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 10px;
+        }
+
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+
+        /* =========================
+           TABLET
+        ========================= */
+
+        @media (max-width: 900px) {
+
+            .sidebar {
+                width: 220px;
+            }
+
+
+            .main {
+                margin-left: 220px;
+                width: calc(100% - 220px);
+                padding: 20px;
+            }
+
+
+            .quick-info {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.25s ease;
+                width: 250px;
+            }
+
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+
+            .main {
+                margin-left: 0;
+                width: 100%;
+                padding: 15px;
+            }
+
+
+            .mobile-menu {
+                display: block;
+            }
+
+
+            .topbar {
+                padding: 16px;
+            }
+
+
+            .topbar h1 {
+                font-size: 20px;
+            }
+
+
+            .topbar p {
+                font-size: 12px;
+            }
+
+
+            .user-info {
+                display: none;
+            }
+
+
+            .settings-card {
+                padding: 20px;
+            }
+
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 17px;
+            }
+
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+
+            .button-row {
+                justify-content: stretch;
+            }
+
+
+            .save-btn {
+                width: 100%;
+            }
+
+
+            .card-header {
+                align-items: flex-start;
+            }
+
+
+            .card-header h2 {
+                font-size: 18px;
+            }
+
+        }
+
+
+        /* =========================
+           OVERLAY
+        ========================= */
+
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 999;
+        }
+
+
+        .overlay.show {
+            display: block;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="layout">
+
+
+    <!-- =========================
+         SIDEBAR
+    ========================= -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="brand">
+
+            <h2>
+                {{ company_settings["company_name"] or "Company Records" }}
+            </h2>
+
+            <p>
+                Management System
+            </p>
+
+        </div>
+
+
+        <div class="menu-title">
+            Main
+        </div>
+
+
+        <a href="/">
+            📊 Dashboard
+        </a>
+
+
+        <a href="/reports">
+            📈 Reports
+        </a>
+
+
+        <a href="/users">
+            👥 Users
+        </a>
+
+
+        <div class="menu-title">
+            Administration
+        </div>
+
+
+        <a href="/settings" class="active">
+            ⚙️ Company Settings
+        </a>
+
+
+        <a href="/change-password">
+            🔐 Change Password
+        </a>
+
+
+        <a href="/backup">
+            💾 Backup Database
+        </a>
+
+
+        <a href="/restore">
+            ♻️ Restore Database
+        </a>
+
+
+        <div class="logout">
+
+            <a href="/logout">
+                🚪 Logout
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+
+    <!-- =========================
+         MAIN
+    ========================= -->
+
+    <main class="main">
+
+
+        <!-- TOPBAR -->
+
+        <div class="topbar">
+
+            <div class="topbar-left">
+
+                <button
+                    class="mobile-menu"
+                    type="button"
+                    onclick="toggleSidebar()"
+                >
+                    ☰
+                </button>
+
+
+                <div>
+
+                    <h1>
+                        Company Settings
+                    </h1>
+
+                    <p>
+                        Manage your company's information
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="user-info">
+
+                <strong>
+                    {{ session["username"] }}
+                </strong>
+
+                <span class="role">
+                    {{ session["role"] }}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- FLASH MESSAGES -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                {% for category, message in messages %}
+
+                    <div class="flash {{ category }}">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <div class="settings-wrapper">
+
+
+            <!-- SETTINGS CARD -->
+
+            <div class="settings-card">
+
+
+                <div class="card-header">
+
+                    <div class="card-icon">
+                        🏢
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Company Information
+                        </h2>
+
+                        <p>
+                            Update the information used throughout your company records system and reports.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <form
+                    method="POST"
+                    action="/settings"
+                    onsubmit="return preventDoubleSubmit(this)"
+                >
+
+
+                    <div class="form-grid">
+
+
+                        <!-- COMPANY NAME -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Company Name <span class="required">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                name="company_name"
+                                value="{{ company_settings['company_name'] or '' }}"
+                                placeholder="Enter company name"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- PHONE -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Phone Number
+                            </label>
+
+                            <input
+                                type="text"
+                                name="phone"
+                                value="{{ company_settings['phone'] or '' }}"
+                                placeholder="e.g. 024 123 4567"
+                            >
+
+                        </div>
+
+
+                        <!-- EMAIL -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Email Address
+                            </label>
+
+                            <input
+                                type="email"
+                                name="email"
+                                value="{{ company_settings['email'] or '' }}"
+                                placeholder="company@example.com"
+                            >
+
+                        </div>
+
+
+                        <!-- WEBSITE -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Website
+                            </label>
+
+                            <input
+                                type="text"
+                                name="website"
+                                value="{{ company_settings['website'] or '' }}"
+                                placeholder="www.example.com"
+                            >
+
+                        </div>
+
+
+                        <!-- ADDRESS -->
+
+                        <div class="form-group full">
+
+                            <label>
+                                Company Address
+                            </label>
+
+                            <input
+                                type="text"
+                                name="address"
+                                value="{{ company_settings['address'] or '' }}"
+                                placeholder="Enter company address"
+                            >
+
+                        </div>
+
+
+                        <!-- DESCRIPTION -->
+
+                        <div class="form-group full">
+
+                            <label>
+                                Company Description
+                            </label>
+
+                            <textarea
+                                name="description"
+                                placeholder="Brief description of your company..."
+                            >{{ company_settings['description'] or '' }}</textarea>
+
+                            <span class="hint">
+                                This information can later be displayed on reports and other company pages.
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- SAVE -->
+
+                    <div class="button-row">
+
+                        <button
+                            type="submit"
+                            class="save-btn"
+                            id="saveButton"
+                        >
+                            💾 Save Company Information
+                        </button>
+
+                    </div>
+
+
+                </form>
+
+            </div>
+
+
+            <!-- QUICK INFORMATION -->
+
+            <div class="quick-info">
+
+
+                <div class="info-card">
+
+                    <div class="info-card-title">
+                        Company
+                    </div>
+
+                    <div class="info-card-value">
+                        {{ company_settings['company_name'] or 'Not set' }}
+                    </div>
+
+                </div>
+
+
+                <div class="info-card">
+
+                    <div class="info-card-title">
+                        Phone
+                    </div>
+
+                    <div class="info-card-value">
+                        {{ company_settings['phone'] or 'Not set' }}
+                    </div>
+
+                </div>
+
+
+                <div class="info-card">
+
+                    <div class="info-card-title">
+                        Email
+                    </div>
+
+                    <div class="info-card-value">
+                        {{ company_settings['email'] or 'Not set' }}
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- ADMIN INFO -->
+
+            <div class="info-box">
+
+                <strong>💡 Administrator Only</strong><br>
+
+                Company settings can only be changed by an administrator.
+                Staff members will not be able to access this page.
+
+            </div>
+
+
+        </div>
+
+
+    </main>
+
+</div>
+
+
+<script>
+
+    function toggleSidebar() {
+
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("overlay");
+
+        sidebar.classList.toggle("open");
+        overlay.classList.toggle("show");
+
+    }
+
+
+    function closeSidebar() {
+
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("overlay");
+
+        sidebar.classList.remove("open");
+        overlay.classList.remove("show");
+
+    }
+
+
+    document.addEventListener("keydown", function(event) {
+
+        if (event.key === "Escape") {
+
+            closeSidebar();
+
+        }
+
+    });
+
+
+    function preventDoubleSubmit(form) {
+
+        const button = document.getElementById("saveButton");
+
+        if (button.disabled) {
+
+            return false;
+
+        }
+
+        button.disabled = true;
+        button.innerHTML = "⏳ Saving...";
+
+        return true;
+
+    }
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,1731 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Employees | Company Records</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+        }
+
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+
+        /* =========================
+           SIDEBAR
+        ========================== */
+
+        .sidebar {
+            width: 250px;
+            background: #111827;
+            border-right: 1px solid #334155;
+            padding: 20px 14px;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+
+        .logo {
+            padding: 10px 12px 25px;
+            border-bottom: 1px solid #334155;
+            margin-bottom: 20px;
+        }
+
+
+        .logo h2 {
+            margin: 0;
+            font-size: 22px;
+            color: #ffffff;
+        }
+
+
+        .logo p {
+            margin: 6px 0 0;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+
+        .menu-title {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            padding: 0 12px;
+            margin: 18px 0 8px;
+            letter-spacing: 1px;
+        }
+
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #cbd5e1;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+
+        .nav-link:hover {
+            background: #1e293b;
+            color: white;
+        }
+
+
+        .nav-link.active {
+            background: #2563eb;
+            color: white;
+        }
+
+
+        .icon {
+            width: 22px;
+            text-align: center;
+        }
+
+
+        /* =========================
+           MAIN
+        ========================== */
+
+        .main {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            min-height: 100vh;
+        }
+
+
+        /* =========================
+           TOPBAR
+        ========================== */
+
+        .topbar {
+            height: 72px;
+            background: #111827;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+        }
+
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+
+        .topbar-left h1 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+
+        .topbar-left p {
+            margin: 5px 0 0;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+
+        .user-text {
+            text-align: right;
+        }
+
+
+        .user-text strong {
+            display: block;
+            font-size: 14px;
+        }
+
+
+        .user-text span {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+
+        /* =========================
+           CONTENT
+        ========================== */
+
+        .content {
+            padding: 30px;
+        }
+
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+
+        .page-header h2 {
+            margin: 0 0 8px;
+            font-size: 28px;
+        }
+
+
+        .page-header p {
+            margin: 0;
+            color: #94a3b8;
+        }
+
+
+        /* =========================
+           FLASH
+        ========================== */
+
+        .flash {
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+        }
+
+
+        .flash-success {
+            background: #064e3b;
+            color: #d1fae5;
+            border-color: #10b981;
+        }
+
+
+        .flash-error {
+            background: #7f1d1d;
+            color: #fecaca;
+            border-color: #991b1b;
+        }
+
+
+        /* =========================
+           CARDS
+        ========================== */
+
+        .card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 22px;
+        }
+
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+
+        .card-header p {
+            margin: 5px 0 0;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+
+        /* =========================
+           FORM
+        ========================== */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        .form-group.full {
+            grid-column: span 2;
+        }
+
+
+        label {
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #475569;
+            border-radius: 7px;
+            font-size: 14px;
+            outline: none;
+            background: #0f172a;
+            color: #f8fafc;
+        }
+
+
+        input::placeholder {
+            color: #64748b;
+        }
+
+
+        input:focus,
+        select:focus {
+            border-color: #2563eb;
+            box-shadow:
+                0 0 0 2px rgba(37, 99, 235, 0.15);
+        }
+
+
+        select option {
+            background: #1e293b;
+            color: white;
+        }
+
+
+        .required {
+            color: #f87171;
+        }
+
+
+        /* =========================
+           BUTTON
+        ========================== */
+
+        .btn-primary {
+            width: 100%;
+            border: none;
+            padding: 13px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            background: #2563eb;
+            color: white;
+            transition: 0.2s;
+        }
+
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+
+        /* =========================
+           EMPLOYEE COUNT
+        ========================== */
+
+        .count-badge {
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #94a3b8;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+
+        .count-badge strong {
+            color: #f8fafc;
+        }
+
+
+        /* =========================
+           TABLE
+        ========================== */
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 950px;
+        }
+
+
+        th,
+        td {
+            padding: 14px 11px;
+            border-bottom: 1px solid #334155;
+            text-align: left;
+            font-size: 13px;
+        }
+
+
+        th {
+            background: #111827;
+            color: #cbd5e1;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+
+        td {
+            color: #cbd5e1;
+        }
+
+
+        td strong {
+            color: #f8fafc;
+        }
+
+
+        tbody tr:hover {
+            background: #263449;
+        }
+
+
+        /* =========================
+           STATUS
+        ========================== */
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+
+        .active-status {
+            background: #14532d;
+            color: #bbf7d0;
+        }
+
+
+        .inactive-status {
+            background: #7f1d1d;
+            color: #fecaca;
+        }
+
+
+        /* =========================
+           ACTIONS
+        ========================== */
+
+        .actions {
+            white-space: nowrap;
+        }
+
+
+        .action-btn {
+            display: inline-block;
+            padding: 7px 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: bold;
+            margin-right: 4px;
+            border: none;
+        }
+
+
+        .edit-btn {
+            background: #1e3a8a;
+            color: #bfdbfe;
+        }
+
+
+        .edit-btn:hover {
+            background: #2563eb;
+            color: white;
+        }
+
+
+        .delete-btn {
+            background: #7f1d1d;
+            color: #fecaca;
+            cursor: pointer;
+        }
+
+
+        .delete-btn:hover {
+            background: #991b1b;
+            color: white;
+        }
+
+
+        /* =========================
+           EMPTY
+        ========================== */
+
+        .empty {
+            text-align: center;
+            padding: 50px 30px;
+            color: #94a3b8;
+        }
+
+
+        .empty-icon {
+            font-size: 45px;
+            margin-bottom: 15px;
+        }
+
+
+        .empty h3 {
+            color: #f8fafc;
+            margin: 0 0 8px;
+        }
+
+
+        .empty p {
+            margin: 0;
+        }
+
+
+        /* =========================
+           DELETE MODAL
+        ========================== */
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.72);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+
+        .modal.show {
+            display: flex;
+        }
+
+
+        .modal-box {
+            width: 100%;
+            max-width: 430px;
+            background: #1e293b;
+            border: 1px solid #475569;
+            border-radius: 14px;
+            padding: 28px;
+            box-shadow:
+                0 25px 70px rgba(0, 0, 0, 0.55);
+            animation: modalIn 0.2s ease;
+        }
+
+
+        @keyframes modalIn {
+
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+        }
+
+
+        .warning-icon {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: #7f1d1d;
+            color: #fecaca;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
+            margin-bottom: 18px;
+        }
+
+
+        .modal-box h3 {
+            margin: 0 0 10px;
+            font-size: 21px;
+        }
+
+
+        .modal-box p {
+            color: #94a3b8;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0 0 22px;
+        }
+
+
+        .modal-box strong {
+            color: #f8fafc;
+        }
+
+
+        .warning-text {
+            color: #fca5a5 !important;
+            font-size: 12px !important;
+            margin-top: -10px !important;
+        }
+
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+
+        .modal-btn {
+            flex: 1;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+
+        .cancel-btn {
+            background: #334155;
+            color: #f8fafc;
+        }
+
+
+        .cancel-btn:hover {
+            background: #475569;
+        }
+
+
+        .confirm-delete-btn {
+            background: #dc2626;
+            color: white;
+        }
+
+
+        .confirm-delete-btn:hover {
+            background: #b91c1c;
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================== */
+
+        .mobile-menu {
+            display: none;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            padding: 9px 12px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 900;
+        }
+
+
+        @media (max-width: 900px) {
+
+            .sidebar {
+                transform: translateX(-100%);
+                transition: 0.25s;
+            }
+
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+
+            .main {
+                margin-left: 0;
+                width: 100%;
+            }
+
+
+            .mobile-menu {
+                display: block;
+            }
+
+
+            .overlay.show {
+                display: block;
+            }
+
+
+            .topbar {
+                padding: 0 18px;
+            }
+
+
+            .user-text {
+                display: none;
+            }
+
+
+            .content {
+                padding: 20px;
+            }
+
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .form-group.full {
+                grid-column: span 1;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .topbar-left h1 {
+                font-size: 18px;
+            }
+
+
+            .page-header h2 {
+                font-size: 23px;
+            }
+
+
+            .card {
+                padding: 20px;
+            }
+
+
+            .card-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+
+            .modal-actions {
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="layout">
+
+
+    <!-- SIDEBAR -->
+
+    <aside
+        class="sidebar"
+        id="sidebar"
+    >
+
+        <div class="logo">
+
+            <h2>
+                CR SYSTEM
+            </h2>
+
+            <p>
+                Company Records Management
+            </p>
+
+        </div>
+
+
+        <div class="menu-title">
+            Main
+        </div>
+
+
+        <a
+            href="{{ url_for('dashboard') }}"
+            class="nav-link"
+        >
+            <span class="icon">🏠</span>
+            Dashboard
+        </a>
+
+
+        <a
+            href="{{ url_for('reports') }}"
+            class="nav-link"
+        >
+            <span class="icon">📊</span>
+            Reports
+        </a>
+
+
+        <a
+            href="{{ url_for('attendance') }}"
+            class="nav-link"
+        >
+            <span class="icon">🕒</span>
+            Attendance
+        </a>
+
+
+        <a
+            href="{{ url_for('attendance_reports') }}"
+            class="nav-link"
+        >
+            <span class="icon">📋</span>
+            Attendance Reports
+        </a>
+
+
+        {% if session.get('role') == 'admin' %}
+
+        <div class="menu-title">
+            Administration
+        </div>
+
+
+        <a
+            href="{{ url_for('employees') }}"
+            class="nav-link active"
+        >
+            <span class="icon">👥</span>
+            Employees
+        </a>
+
+
+        <a
+            href="{{ url_for('users') }}"
+            class="nav-link"
+        >
+            <span class="icon">👤</span>
+            Users
+        </a>
+
+
+        <a
+            href="{{ url_for('settings') }}"
+            class="nav-link"
+        >
+            <span class="icon">⚙️</span>
+            Company Settings
+        </a>
+
+
+        <a
+            href="{{ url_for('backup') }}"
+            class="nav-link"
+        >
+            <span class="icon">💾</span>
+            Backup Database
+        </a>
+
+
+        <a
+            href="{{ url_for('restore') }}"
+            class="nav-link"
+        >
+            <span class="icon">♻️</span>
+            Restore Database
+        </a>
+
+        {% endif %}
+
+
+        <div class="menu-title">
+            Account
+        </div>
+
+
+        <a
+            href="{{ url_for('change_password') }}"
+            class="nav-link"
+        >
+            <span class="icon">🔐</span>
+            Change Password
+        </a>
+
+
+        <a
+            href="{{ url_for('logout') }}"
+            class="nav-link"
+        >
+            <span class="icon">🚪</span>
+            Logout
+        </a>
+
+    </aside>
+
+
+    <div
+        class="overlay"
+        id="overlay"
+        onclick="closeSidebar()"
+    ></div>
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+
+            <div class="topbar-left">
+
+
+                <button
+                    class="mobile-menu"
+                    onclick="openSidebar()"
+                >
+                    ☰
+                </button>
+
+
+                <div>
+
+                    <h1>
+                        Employee Management
+                    </h1>
+
+                    <p>
+                        Add and manage company employees
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="user-info">
+
+
+                <div class="user-text">
+
+                    <strong>
+                        {{ session.get('username', 'User') }}
+                    </strong>
+
+                    <span>
+                        {{ session.get('role', 'staff')|capitalize }}
+                    </span>
+
+                </div>
+
+
+                <div class="user-avatar">
+
+                    {{ session.get('username', 'U')[0]|upper }}
+
+                </div>
+
+
+            </div>
+
+
+        </header>
+
+
+        <!-- CONTENT -->
+
+        <section class="content">
+
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+
+                {% if messages %}
+
+                    {% for category, message in messages %}
+
+                        <div
+                            class="flash
+                            {% if category == 'success' %}
+                                flash-success
+                            {% else %}
+                                flash-error
+                            {% endif %}"
+                        >
+                            {{ message }}
+                        </div>
+
+                    {% endfor %}
+
+                {% endif %}
+
+            {% endwith %}
+
+
+            <div class="page-header">
+
+                <h2>
+                    Employees
+                </h2>
+
+                <p>
+                    Manage employee information and employment status.
+                </p>
+
+            </div>
+
+
+            <!-- ADD EMPLOYEE -->
+
+            <div class="card">
+
+
+                <div class="card-header">
+
+
+                    <div>
+
+                        <h3>
+                            ➕ Add New Employee
+                        </h3>
+
+                        <p>
+                            Enter the employee's information below.
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+
+                <form method="POST">
+
+
+                    <div class="form-grid">
+
+
+                        <div class="form-group">
+
+                            <label for="employee_id">
+
+                                Employee ID
+                                <span class="required">*</span>
+
+                            </label>
+
+
+                            <input
+                                type="text"
+                                id="employee_id"
+                                name="employee_id"
+                                placeholder="e.g. EMP001"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="full_name">
+
+                                Full Name
+                                <span class="required">*</span>
+
+                            </label>
+
+
+                            <input
+                                type="text"
+                                id="full_name"
+                                name="full_name"
+                                placeholder="Employee full name"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="department">
+
+                                Department
+                                <span class="required">*</span>
+
+                            </label>
+
+
+                            <input
+                                type="text"
+                                id="department"
+                                name="department"
+                                placeholder="e.g. Information Technology"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="position">
+                                Position
+                            </label>
+
+
+                            <input
+                                type="text"
+                                id="position"
+                                name="position"
+                                placeholder="e.g. IT Officer"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="phone">
+                                Phone
+                            </label>
+
+
+                            <input
+                                type="text"
+                                id="phone"
+                                name="phone"
+                                placeholder="e.g. 0240000000"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="email">
+                                Email
+                            </label>
+
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="employee@email.com"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="status">
+                                Status
+                            </label>
+
+
+                            <select
+                                id="status"
+                                name="status"
+                            >
+
+                                <option value="Active">
+                                    Active
+                                </option>
+
+                                <option value="Inactive">
+                                    Inactive
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group full">
+
+                            <button
+                                type="submit"
+                                class="btn-primary"
+                            >
+                                ➕ Add Employee
+                            </button>
+
+                        </div>
+
+
+                    </div>
+
+
+                </form>
+
+
+            </div>
+
+
+            <!-- EMPLOYEE LIST -->
+
+            <div class="card">
+
+
+                <div class="card-header">
+
+
+                    <div>
+
+                        <h3>
+                            📋 Employee List
+                        </h3>
+
+                        <p>
+                            All employees registered in the system.
+                        </p>
+
+                    </div>
+
+
+                    {% if employees %}
+
+                    <div class="count-badge">
+
+                        Total:
+                        <strong>
+                            {{ employees|length }}
+                        </strong>
+
+                    </div>
+
+                    {% endif %}
+
+
+                </div>
+
+
+                <div class="table-container">
+
+
+                    {% if employees %}
+
+
+                    <table>
+
+
+                        <thead>
+
+                            <tr>
+
+                                <th>#</th>
+
+                                <th>
+                                    Employee ID
+                                </th>
+
+                                <th>
+                                    Full Name
+                                </th>
+
+                                <th>
+                                    Department
+                                </th>
+
+                                <th>
+                                    Position
+                                </th>
+
+                                <th>
+                                    Phone
+                                </th>
+
+                                <th>
+                                    Email
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Actions
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+
+                        {% for employee in employees %}
+
+
+                        <tr>
+
+
+                            <td>
+                                {{ loop.index }}
+                            </td>
+
+
+                            <td>
+
+                                <strong>
+                                    {{ employee["employee_id"] }}
+                                </strong>
+
+                            </td>
+
+
+                            <td>
+                                {{ employee["full_name"] }}
+                            </td>
+
+
+                            <td>
+                                {{ employee["department"] }}
+                            </td>
+
+
+                            <td>
+                                {{ employee["position"] or "-" }}
+                            </td>
+
+
+                            <td>
+                                {{ employee["phone"] or "-" }}
+                            </td>
+
+
+                            <td>
+                                {{ employee["email"] or "-" }}
+                            </td>
+
+
+                            <td>
+
+
+                                {% if employee["status"] == "Active" %}
+
+                                    <span
+                                        class="status active-status"
+                                    >
+                                        Active
+                                    </span>
+
+                                {% else %}
+
+                                    <span
+                                        class="status inactive-status"
+                                    >
+                                        Inactive
+                                    </span>
+
+                                {% endif %}
+
+
+                            </td>
+
+
+                            <td class="actions">
+
+
+                                <a
+                                    href="{{ url_for(
+                                        'edit_employee',
+                                        employee_id=employee['id']
+                                    ) }}"
+                                    class="action-btn edit-btn"
+                                >
+                                    ✏️ Edit
+                                </a>
+
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for(
+                                        'delete_employee',
+                                        employee_id=employee['id']
+                                    ) }}"
+                                    style="display:inline;"
+                                    onsubmit="return openDeleteModal(
+                                        '{{ employee['id'] }}',
+                                        '{{ employee['full_name']|e }}'
+                                    );"
+                                >
+
+                                    <button
+                                        type="submit"
+                                        class="action-btn delete-btn"
+                                    >
+                                        🗑 Delete
+                                    </button>
+
+                                </form>
+
+
+                            </td>
+
+
+                        </tr>
+
+
+                        {% endfor %}
+
+
+                        </tbody>
+
+
+                    </table>
+
+
+                    {% else %}
+
+
+                    <div class="empty">
+
+
+                        <div class="empty-icon">
+                            👥
+                        </div>
+
+
+                        <h3>
+                            No employees yet
+                        </h3>
+
+
+                        <p>
+                            Add your first employee using the form above.
+                        </p>
+
+
+                    </div>
+
+
+                    {% endif %}
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+</div>
+
+
+<!-- =========================
+     DELETE CONFIRMATION MODAL
+========================== -->
+
+<div
+    class="modal"
+    id="deleteModal"
+>
+
+
+    <div class="modal-box">
+
+
+        <div class="warning-icon">
+            ⚠️
+        </div>
+
+
+        <h3>
+            Delete Employee?
+        </h3>
+
+
+        <p>
+
+            You are about to delete
+            <strong id="employeeName">
+                this employee
+            </strong>.
+
+            This action cannot be undone.
+
+        </p>
+
+
+        <p class="warning-text">
+
+            ⚠️ Historical records and attendance connected to
+            this employee may remain in the database.
+
+        </p>
+
+
+        <div class="modal-actions">
+
+
+            <button
+                type="button"
+                class="modal-btn cancel-btn"
+                onclick="closeDeleteModal()"
+            >
+                Cancel
+            </button>
+
+
+            <button
+                type="button"
+                class="modal-btn confirm-delete-btn"
+                onclick="confirmDelete()"
+            >
+                Yes, Delete
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+    /* =========================
+       SIDEBAR
+    ========================== */
+
+    function openSidebar() {
+
+        document
+            .getElementById("sidebar")
+            .classList.add("open");
+
+        document
+            .getElementById("overlay")
+            .classList.add("show");
+
+    }
+
+
+    function closeSidebar() {
+
+        document
+            .getElementById("sidebar")
+            .classList.remove("open");
+
+        document
+            .getElementById("overlay")
+            .classList.remove("show");
+
+    }
+
+
+    /* =========================
+       DELETE MODAL
+    ========================== */
+
+    let deleteForm = null;
+
+
+    function openDeleteModal(
+        employeeId,
+        employeeName
+    ) {
+
+        const modal =
+            document.getElementById("deleteModal");
+
+
+        const nameElement =
+            document.getElementById("employeeName");
+
+
+        const forms =
+            document.querySelectorAll(
+                'form[action*="/delete-employee/"]'
+            );
+
+
+        forms.forEach(function(form) {
+
+            const action =
+                form.getAttribute("action");
+
+            if (
+                action &&
+                action.endsWith(
+                    "/" + employeeId
+                )
+            ) {
+
+                deleteForm = form;
+
+            }
+
+        });
+
+
+        nameElement.textContent =
+            employeeName;
+
+
+        modal.classList.add("show");
+
+
+        return false;
+
+    }
+
+
+    function closeDeleteModal() {
+
+        document
+            .getElementById("deleteModal")
+            .classList.remove("show");
+
+        deleteForm = null;
+
+    }
+
+
+    function confirmDelete() {
+
+        if (deleteForm) {
+
+            deleteForm.removeAttribute(
+                "onsubmit"
+            );
+
+            deleteForm.submit();
+
+        }
+
+    }
+
+
+    /* =========================
+       CLOSE MODAL BY CLICKING
+       OUTSIDE
+    ========================== */
+
+    document
+        .getElementById("deleteModal")
+        .addEventListener(
+            "click",
+            function(event) {
+
+                if (
+                    event.target === this
+                ) {
+
+                    closeDeleteModal();
+
+                }
+
+            }
+        );
+
+
+    /* =========================
+       ESC KEY
+    ========================== */
+
+    document.addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key === "Escape"
+            ) {
+
+                closeDeleteModal();
+
+            }
+
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>

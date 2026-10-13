@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Record | Company Records</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f8fc;
+            color: #1e293b;
+        }
+
+        .header {
+            background: #102a43;
+            color: white;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 26px;
+        }
+
+        .header p {
+            margin: 8px 0 0;
+            color: #cbd5e1;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 760px;
+            margin: 35px auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(15, 23, 42, 0.08);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            margin-bottom: 25px;
+            color: #102a43;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 700;
+            color: #334155;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            background: white;
+            color: #1e293b;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        input[readonly] {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .employee-id-box {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 22px;
+        }
+
+        .employee-id-box strong {
+            color: #1d4ed8;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-save {
+            background: #2563eb;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-save:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-back {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .btn-back:hover {
+            background: #cbd5e1;
+        }
+
+        .hint {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                width: 94%;
+                margin: 20px auto;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            .btn-save,
+            .btn-back {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>Company Records System</h1>
+    <p>Edit Staff Record</p>
+</div>
+
+<div class="container">
+
+    <div class="card">
+
+        <h2>Edit Record</h2>
+
+        <div class="employee-id-box">
+            Employee ID:
+            <strong>{{ record["employee_id"] or "Not assigned" }}</strong>
+        </div>
+
+        <form method="POST">
+
+            <!-- Employee -->
+            <div class="form-group">
+                <label for="staff_name">Employee</label>
+
+                <select
+                    name="staff_name"
+                    id="staff_name"
+                    required
+                >
+
+                    <option value="">
+                        Select employee
+                    </option>
+
+                    {% for employee in employees %}
+
+                        <option
+                            value="{{ employee['full_name'] }}"
+                            data-employee-id="{{ employee['employee_id'] }}"
+                            data-department="{{ employee['department'] }}"
+                            {% if employee['full_name'] == record['staff_name'] %}selected{% endif %}
+                        >
+                            {{ employee['full_name'] }}
+                            — {{ employee['employee_id'] }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+                <div class="hint">
+                    Select the employee. The Employee ID and department will be linked automatically.
+                </div>
+            </div>
+
+            <!-- Employee ID -->
+            <div class="form-group">
+                <label for="employee_id">Employee ID</label>
+
+                <input
+                    type="text"
+                    id="employee_id"
+                    name="employee_id"
+                    value="{{ record['employee_id'] or '' }}"
+                    readonly
+                >
+            </div>
+
+            <!-- Date -->
+            <div class="form-group">
+                <label for="record_date">Date</label>
+
+                <input
+                    type="date"
+                    id="record_date"
+                    name="record_date"
+                    value="{{ record['record_date'] or record['date'] or '' }}"
+                    required
+                >
+            </div>
+
+            <!-- Department -->
+            <div class="form-group">
+                <label for="department">Department</label>
+
+                <input
+                    type="text"
+                    id="department"
+                    name="department"
+                    value="{{ record['department'] }}"
+                    readonly
+                    required
+                >
+            </div>
+
+            <!-- Work Done -->
+            <div class="form-group">
+                <label for="work_done">Work Done</label>
+
+                <textarea
+                    id="work_done"
+                    name="work_done"
+                    required
+                >{{ record['work_done'] }}</textarea>
+            </div>
+
+            <!-- Remarks -->
+            <div class="form-group">
+                <label for="remarks">Remarks</label>
+
+                <textarea
+                    id="remarks"
+                    name="remarks"
+                >{{ record['remarks'] or '' }}</textarea>
+            </div>
+
+            <div class="buttons">
+
+                <button
+                    type="submit"
+                    class="btn btn-save"
+                >
+                    Save Changes
+                </button>
+
+                <a
+                    href="{{ url_for('dashboard') }}"
+                    class="btn btn-back"
+                >
+                    ← Back
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+    const employeeSelect = document.getElementById("staff_name");
+    const employeeIdInput = document.getElementById("employee_id");
+    const departmentInput = document.getElementById("department");
+
+    employeeSelect.addEventListener("change", function () {
+
+        const selectedOption =
+            this.options[this.selectedIndex];
+
+        const employeeId =
+            selectedOption.getAttribute("data-employee-id") || "";
+
+        const department =
+            selectedOption.getAttribute("data-department") || "";
+
+        employeeIdInput.value = employeeId;
+        departmentInput.value = department;
+    });
+</script>
+
+</body>
+</html>
