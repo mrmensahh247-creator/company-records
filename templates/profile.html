@@ -1,0 +1,244 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | Company Records</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f8fc;
+            color: #1e293b;
+        }
+
+        header {
+            background: #102a43;
+            color: white;
+            padding: 20px 30px;
+        }
+
+        header h2 {
+            margin: 0 0 6px;
+        }
+
+        header p {
+            margin: 0;
+            color: #cbd5e1;
+            font-size: 13px;
+        }
+
+        main {
+            max-width: 650px;
+            margin: 40px auto;
+            padding: 0 18px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-top: 0;
+        }
+
+        .muted {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            font-weight: bold;
+            margin: 25px auto;
+            overflow: hidden;
+            border: 4px solid #dbeafe;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .account {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .account strong {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+
+        .role {
+            color: #2563eb;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 9px;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+
+        .hint {
+            color: #64748b;
+            font-size: 12px;
+            margin: 9px 0 20px;
+        }
+
+        button, .back {
+            display: inline-block;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 18px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .back {
+            background: #e2e8f0;
+            color: #334155;
+            margin-top: 15px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .success {
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        .error {
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+
+        @media (max-width: 500px) {
+            .card {
+                padding: 22px 18px;
+            }
+
+            main {
+                margin-top: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h2>{{ company_settings["company_name"] or "Company Records" }}</h2>
+    <p>Manage your account profile</p>
+</header>
+
+<main>
+    <div class="card">
+
+        <h1>My Profile</h1>
+        <p class="muted">Upload a picture to personalise your account.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="message {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+
+        <div class="account">
+            <div class="avatar">
+                {% if user["profile_picture"] %}
+                    <img
+                        src="{{ url_for('static', filename='uploads/' + user['profile_picture']) }}"
+                        alt="Your profile picture"
+                    >
+                {% else %}
+                    {{ user["username"][0]|upper }}
+                {% endif %}
+            </div>
+
+            <strong>{{ user["username"] }}</strong>
+            <span class="role">{{ user["role"] }}</span>
+        </div>
+
+        <form
+            method="POST"
+            action="{{ url_for('profile') }}"
+            enctype="multipart/form-data"
+        >
+            <label for="profile_picture">Choose a profile picture</label>
+
+            <input
+                type="file"
+                id="profile_picture"
+                name="profile_picture"
+                accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"
+                required
+            >
+
+            <p class="hint">
+                Accepted formats: PNG, JPG, JPEG and WEBP. Maximum size: 2 MB.
+            </p>
+
+            <button type="submit">Save Profile Picture</button>
+        </form>
+
+        <a class="back" href="{{ url_for('dashboard') }}">← Back to Dashboard</a>
+
+    </div>
+</main>
+
+</body>
+</html>
